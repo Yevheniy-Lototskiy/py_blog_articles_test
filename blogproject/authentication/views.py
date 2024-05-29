@@ -14,3 +14,13 @@ def register(request):
         form = RegisterForm()
 
     return render(request, "authentication/register.html", {"form": form})
+
+
+def login_view(request):
+    return auth_views.LoginView.as_view(
+        template_name='authentication/login.html'
+    )(request)
+
+
+def logout_view(request):
+    return auth_views.LogoutView.as_view()(request)
