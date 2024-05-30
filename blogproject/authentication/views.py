@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, views as auth_views
-from .forms import RegisterForm
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
+from .forms import RegisterForm, ProfileForm
 
 
 def register(request):
@@ -24,3 +26,15 @@ def login_view(request):
 
 def logout_view(request):
     return auth_views.LogoutView.as_view()(request)
+
+
+@login_required
+def profile_edit(request):
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect("profile_edit")
+    else:
+        form = ProfileForm(instance=request.user.profile)
+    return render(request, "authentication/profile_edit.html", {"form": form})
